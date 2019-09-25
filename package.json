@@ -1,0 +1,23 @@
+{
+  "name": "ztudy_adm",
+  "version": "1.0.0",
+  "description": "Aplicación web para administración de servicio Ztudy",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Gonzalo Orellana",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "del": "^5.1.0",
+    "express": "^4.17.1",
+    "firebase-admin": "^8.6.0",
+    "method-override": "^3.0.0",
+    "micro": "^9.3.4",
+    "morgan": "^1.9.1",
+    "request": "^2.88.0"
+  }
+}
