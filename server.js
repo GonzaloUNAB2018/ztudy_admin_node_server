@@ -15,6 +15,12 @@ app.use(methodOverride());
 app.use(cors());
 // route pages
 
+app.use(express.static(__dirname + '/public/'));
+
+app.listen('8080', function() {
+  console.log('Servidor web escuchando en el puerto 8080');
+});
+
 app.post('/createuser', function (req, res) {
   var post=req.body;
   console.log(post.email, post.phoneNumber, post.password);
@@ -71,9 +77,9 @@ app.post('/deleteuser', function(req, res){
   var post=req.body;
   admin.auth().deleteUser(post.uid)
   .then(function(userDeleted) {
-    console.log('Successfully deleted user:', post.displayName);
+    console.log('Successfully deleted user:', post.uid);
     res.json({
-      message: post.displayName+' Borrado'
+      message: post.uid+' Borrado'
     })
   })
   .catch(function(error) {
@@ -81,13 +87,13 @@ app.post('/deleteuser', function(req, res){
   });
 })
 
-app.listen(process.env.PORT || 8080);
+//app.listen(process.env.PORT || 8080);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://ztudy-cl.firebaseio.com"
   });
 
-console.log('Iniciando en: http://localhost:8080');
+//console.log('Iniciando en: http://localhost:8080');
 
 
