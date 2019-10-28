@@ -27,8 +27,8 @@ app.post('/createuser', function (req, res) {
   admin.auth().createUser({
     displayName: post.displayName,
     email: post.email,
-    emailVerified: false,
-    phoneNumber: post.phoneNumber,
+    emailVerified: true,
+    //phoneNumber: post.phoneNumber,
     password: post.password,
     disabled: post.disabled
   })
@@ -38,7 +38,7 @@ app.post('/createuser', function (req, res) {
     res.json({
       displayName: post.displayName,
       email: post.email,
-      phoneNumber: post.phoneNumber,
+      //phoneNumber: post.phoneNumber,
       password: post.password,
       disabled: post.disabled,
       uid:userRecord.uid
@@ -47,8 +47,33 @@ app.post('/createuser', function (req, res) {
   .catch(function(error) {
     console.log('Error creating new user:', error);
   });
-  
 });
+
+/*app.post('/sendemail', function(req, res){
+  const actionCodeSettings = {
+    // URL you want to redirect back to. The domain (www.example.com) for
+    // this URL must be whitelisted in the Firebase Console.
+    url: 'https://ztudy-cl.firebaseapp.com',
+    // This must be true for email link sign-in.
+    handleCodeInApp: true,
+    android: {
+      packageName: 'ztudy.app.io',
+      installApp: true,
+      minimumVersion: '12'
+    },
+    // FDL custom domain.
+    dynamicLinkDomain: 'coolapp.page.link'
+  };
+  var post=req.body;
+  console.log(post.email);
+  admin.auth().generateEmailVerificationLink(post.email, actionCodeSettings)
+  .then((response)=>{
+    return sendCustomVerificationEmail(post.email, displayName, response);
+  })
+  .catch((error) => {
+    console.log(error)
+  });
+})*/
 
 app.post('/contact', function (req, res) {
   var post=req.body;
@@ -84,6 +109,21 @@ app.post('/deleteuser', function(req, res){
   })
   .catch(function(error) {
     console.log('Error deleting user:', error);
+  });
+});
+
+app.post('/getpassword', function(req, res){
+  var post=req.body;
+  admin.auth().getUser(post.uid)
+  .then(function(userRecord) {
+    // See the UserRecord reference doc for the contents of userRecord.
+    console.log('Successfully fetched user data:', userRecord.toJSON());
+    res.json({
+      message: userRecord.toJSON()
+    })
+  })
+  .catch(function(error) {
+    console.log('Error fetching user data:', error);
   });
 })
 
