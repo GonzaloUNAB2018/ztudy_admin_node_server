@@ -19,7 +19,53 @@ app.use(express.static(__dirname + '/public/'));
 
 app.listen('8080', function() {
   console.log('Servidor web escuchando en el puerto 8080');
+  //listAllUsers();
 });
+
+function listAllUsers(nextPageToken) {
+  // List batch of users, 1000 at a time.
+  admin.auth().listUsers(1000, nextPageToken)
+    .then(function(listUsersResult) {
+      let users = [];
+      listUsersResult.users.forEach(function(userRecord) {
+        //console.log('user', userRecord.toJSON());
+        users.push(userRecord.toJSON());
+      });
+      if (listUsersResult.pageToken) {
+        // List next batch of users.
+        listAllUsers(listUsersResult.pageToken);
+      }else{
+        console.log(users);
+      }
+    })
+    .catch(function(error) {
+      console.log('Error listing users:', error);
+    });
+}
+
+app.post('/getAllUsers', function (req, res){
+  let nextPageToken;
+  var post=req.body;
+  console.log(post.message);
+  admin.auth().listUsers(1000, nextPageToken)
+  .then(function(listUsersResult) {
+    let users = [];
+    listUsersResult.users.forEach(function(userRecord) {
+      //console.log('user', userRecord.toJSON());
+      users.push(userRecord.toJSON());
+    });
+    if (listUsersResult.pageToken) {
+      // List next batch of users.
+      listAllUsers(listUsersResult.pageToken);
+    }else{
+      console.log(users);
+      res.json(users);
+    }
+  })
+  .catch(function(error) {
+    console.log('Error listing users:', error);
+  });
+})
 
 app.post('/createuser', function (req, res) {
   var post=req.body;
@@ -28,9 +74,16 @@ app.post('/createuser', function (req, res) {
     displayName: post.displayName,
     email: post.email,
     emailVerified: true,
-    //phoneNumber: post.phoneNumber,
+    phoneNumber: post.phoneNumber,
     password: post.password,
-    disabled: post.disabled
+    disabled: post.disabled,
+    /*providerData: [{
+      uid: post.providerData.uid,//'a@a.cl',
+      displayName: post.providerData.displayName,
+      email: post.providerData.email,//'a@a.cl',
+      //photoURL: undefined,
+      providerId: post.providerData.providerId,
+    }]*/
   })
   .then(function(userRecord){
     userRecord.uid;
@@ -38,7 +91,7 @@ app.post('/createuser', function (req, res) {
     res.json({
       displayName: post.displayName,
       email: post.email,
-      //phoneNumber: post.phoneNumber,
+      phoneNumber: post.phoneNumber,
       password: post.password,
       disabled: post.disabled,
       uid:userRecord.uid
