@@ -29,7 +29,6 @@ plugins/android.json
 plugins/ios.json
 www/
 $RECYCLE.BIN/
-ztudy-cl-firebase-adminsdk.json
 
 .DS_Store
 Thumbs.db
